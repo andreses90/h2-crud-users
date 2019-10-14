@@ -1,24 +1,42 @@
 package com.crud.users.model;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @Entity
 @Table(name = "users")
-public class User {
+@EntityListeners(AuditingEntityListener.class)
+public class User  {
 
 	private long id;
 	private String name;
 	private String email;
 	private String password;
+	@CreatedDate
+    private LocalDateTime created;
+    @LastModifiedDate
+    private LocalDateTime modified;
+    @CreatedBy
+    private String createdBy;
+    @LastModifiedBy
+    private String modifiedBy;
 	private Set<Phone> phones;
+
 
 	public User() {
 
@@ -59,7 +77,6 @@ public class User {
 		this.email = email;
 	}
 
-	@Column(name = "password", nullable = false)
 	public String getPassword() {
 		return password;
 	}
@@ -75,6 +92,39 @@ public class User {
 
 	public void setPhones(Set<Phone> phones) {
 		this.phones = phones;
+	}
+	
+
+	public LocalDateTime getDateCreated() {
+		return created;
+	}
+
+	public void setDateCreated(LocalDateTime dateCreated) {
+		this.created = dateCreated;
+	}
+
+	public LocalDateTime getDateModified() {
+		return modified;
+	}
+
+	public void setDateModified(LocalDateTime dateModified) {
+		this.modified = dateModified;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 
 	@Override

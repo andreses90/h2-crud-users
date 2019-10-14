@@ -36,36 +36,40 @@ public class UserController {
 	@GetMapping("/users/{id}")
 	public ResponseEntity<User> getEmployeeById(@PathVariable(value = "id") Long employeeId)
 			throws ResourceNotFoundException {
-		User employee = userRepository.findById(employeeId)
+		User user = userRepository.findById(employeeId)
 				.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado para id : " + employeeId));
-		return ResponseEntity.ok().body(employee);
+		return ResponseEntity.ok().body(user);
 	}
 
 	@PostMapping("/users")
-	public User createEmployee(@Valid @RequestBody User employee) {
-		return userRepository.save(employee);
+	public User createEmployee(@Valid @RequestBody User user) throws ResourceNotFoundException {
+		User userRepo = userRepository.findByEmail(user.getEmail());
+		if (userRepo !=null) {
+			throw  new ResourceNotFoundException("Email ya está utilizado ");
+		}
+		return userRepository.save(user);
 	}
 
 	@PutMapping("/users/{id}")
-	public ResponseEntity<User> updateEmployee(@PathVariable(value = "id") Long employeeId,
+	public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long userId,
 			@Valid @RequestBody User userDetail) throws ResourceNotFoundException {
-		User user = userRepository.findById(employeeId)
-				.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado para id : " + employeeId));
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado para id : " + userId));
 
 		user.setName(userDetail.getName());
 		user.setEmail(userDetail.getEmail());
 		user.setPassword(userDetail.getPassword());
-		final User updatedEmployee = userRepository.save(user);
-		return ResponseEntity.ok(updatedEmployee);
+		final User updatedUser = userRepository.save(user);
+		return ResponseEntity.ok(updatedUser);
 	}
 
 	@DeleteMapping("/users/{id}")
-	public Map<String, Boolean> deleteEmployee(@PathVariable(value = "id") Long employeeId)
+	public Map<String, Boolean> deleteUser(@PathVariable(value = "id") Long userId)
 			throws ResourceNotFoundException {
-		User employee = userRepository.findById(employeeId)
-				.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado para id : " + employeeId));
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado para id : " + userId));
 
-		userRepository.delete(employee);
+		userRepository.delete(user);
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("deleted", Boolean.TRUE);
 		return response;
